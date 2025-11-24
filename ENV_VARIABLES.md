@@ -6,9 +6,10 @@ Ce fichier documente les variables d'environnement nécessaires pour le projet.
 
 ### `OPENROUTER_API_KEY`
 - **Description** : Clé API OpenRouter pour accéder à DeepSeek R1T2 Chimera
-- **Requis** : ✅ Oui
+- **Requis** : ❌ Non (une clé API par défaut est déjà incluse dans le code)
 - **Exemple** : `sk-or-v1-...`
 - **Où l'obtenir** : https://openrouter.ai/keys
+- **Note** : Le projet fonctionne immédiatement sans configuration car une clé API est déjà présente. Vous pouvez la remplacer en définissant cette variable d'environnement.
 
 ## Variables optionnelles
 

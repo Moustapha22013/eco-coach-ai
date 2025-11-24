@@ -24,9 +24,9 @@ yarn install
 pnpm install
 ```
 
-2. Configurez votre clé API OpenRouter :
+2. Configurez votre clé API OpenRouter (optionnel) :
 
-Créez un fichier `.env.local` à la racine du projet :
+Le projet fonctionne immédiatement avec une clé API OpenRouter déjà configurée. Pour utiliser votre propre clé, créez un fichier `.env.local` à la racine du projet :
 
 ```bash
 OPENROUTER_API_KEY=votre_cle_api_ici
@@ -35,8 +35,6 @@ OPENROUTER_API_KEY=votre_cle_api_ici
 SITE_URL=http://localhost:3000
 SITE_NAME=Eco-Assistant IA
 ```
-
-Par défaut, le code utilise une clé API fournie, mais il est recommandé d'utiliser votre propre clé via la variable d'environnement.
 
 Pour obtenir une clé API OpenRouter :
 - Visitez [OpenRouter](https://openrouter.ai/)
@@ -126,20 +124,23 @@ bun dev
    - Importez le repository `eco-coach-ia`
    - Vercel détectera automatiquement Next.js
 
-3. **Configurez les variables d'environnement** :
-   - `OPENROUTER_API_KEY` : Votre clé API OpenRouter (requis)
+3. **Configurez les variables d'environnement** (optionnel) :
+   - Par défaut, une clé API OpenRouter est déjà configurée dans le code
+   - Pour utiliser votre propre clé, ajoutez `OPENROUTER_API_KEY` dans les variables d'environnement Vercel
    - `SITE_URL` : URL de votre site déployé (optionnel, ex: https://votre-app.vercel.app)
    - `SITE_NAME` : Nom de votre application (optionnel, ex: Eco-Assistant IA)
 
-4. **Déployez !** Vercel déploiera automatiquement votre application.
+4. **Déployez !** Vercel déploiera automatiquement votre application. Le déploiement fonctionnera immédiatement avec la clé API par défaut.
 
-### Variables d'environnement requises
+### Variables d'environnement
 
-| Variable | Description | Requis |
-|----------|-------------|--------|
-| `OPENROUTER_API_KEY` | Clé API OpenRouter pour accéder à DeepSeek R1T2 Chimera | ✅ Oui |
-| `SITE_URL` | URL du site pour les statistiques OpenRouter | ❌ Non |
-| `SITE_NAME` | Nom du site pour les statistiques OpenRouter | ❌ Non |
+| Variable | Description | Requis | Note |
+|----------|-------------|--------|------|
+| `OPENROUTER_API_KEY` | Clé API OpenRouter pour accéder à DeepSeek R1T2 Chimera | ❌ Non | Une clé API par défaut est déjà incluse dans le code. Vous pouvez la remplacer en ajoutant cette variable. |
+| `SITE_URL` | URL du site pour les statistiques OpenRouter | ❌ Non | Optionnel |
+| `SITE_NAME` | Nom du site pour les statistiques OpenRouter | ❌ Non | Optionnel |
+
+**Note importante** : Le projet fonctionne immédiatement après le déploiement car une clé API OpenRouter est déjà configurée dans le code. Vous n'avez pas besoin de configurer de variables d'environnement pour que le déploiement fonctionne.
 
 ### Autres plateformes
 
