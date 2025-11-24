@@ -116,12 +116,12 @@ bun dev
 
 ### Vercel (recommandé)
 
-1. **Poussez votre code sur GitHub** (déjà fait : https://github.com/Moustapha22013/eco-coach-ia)
+1. **Poussez votre code sur GitHub** (déjà fait : https://github.com/Moustapha22013/eco-coach-ai)
 
 2. **Importez le projet sur Vercel** :
    - Allez sur [Vercel](https://vercel.com)
    - Cliquez sur "Add New Project"
-   - Importez le repository `eco-coach-ia`
+   - Importez le repository `eco-coach-ai`
    - Vercel détectera automatiquement Next.js
 
 3. **Configurez les variables d'environnement** (optionnel) :
