@@ -4,7 +4,7 @@ import { EcoScoreReport } from '@/types';
 
 export const useChat = () => {
     const { messages, setMessages, sendMessage, status } = useVercelChat({
-        api: '/api/chat',
+        baseURL: '/api/chat',
         initialMessages: [
             {
                 id: 'welcome',
