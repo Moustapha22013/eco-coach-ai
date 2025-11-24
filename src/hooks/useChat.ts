@@ -1,40 +1,61 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useChat as useVercelChat } from '@ai-sdk/react';
 import { EcoScoreReport } from '@/types';
 
+// Helper to extract text content from UIMessage
+const getMessageContent = (message: { content?: unknown; parts?: unknown[] }): string => {
+    if (typeof message.content === 'string') {
+        return message.content;
+    }
+    if (message.parts && Array.isArray(message.parts)) {
+        for (const part of message.parts) {
+            if (part && typeof part === 'object' && 'text' in part && typeof part.text === 'string') {
+                return part.text;
+            }
+        }
+    }
+    return '';
+};
+
 export const useChat = () => {
     const { messages, setMessages, sendMessage, status } = useVercelChat({
-        baseURL: '/api/chat',
-        initialMessages: [
-            {
-                id: 'welcome',
-                role: 'assistant',
-                content: "Bonjour ! 🌱 Je suis votre **Coach Eco-Numérique**.\n\nMon objectif est de vous aider à comprendre et réduire l'empreinte carbone de votre projet numérique à travers un dialogue interactif.\n\nJe vais vous poser des questions sur vos choix techniques (images, hébergement, cache, code...) et vous expliquer l'impact environnemental de chaque décision.\n\n**Par quoi souhaitez-vous commencer ?**\n- Optimisation des images\n- Choix du serveur/hébergement\n- Configuration du cache\n- Optimisation du code\n- Autre question ?",
-            }
-        ],
+        // No static initial messages - all responses come from DeepSeek
+        // Default endpoint is /api/chat
     });
 
     const [report, setReport] = useState<EcoScoreReport | null>(null);
+    const welcomeSentRef = useRef(false);
 
-    // Category max points mapping based on scoring rules
-    const categoryMaxPoints: Record<string, number> = {
-        'Contenu': 20,
-        'Infrastructure': 25,
-        'Performance': 15,
-        'Développement': 15,
-        'Sobriété': 25,
-    };
+    // Send welcome message to DeepSeek on first load to get dynamic response
+    useEffect(() => {
+        if (!welcomeSentRef.current && messages.length === 0) {
+            welcomeSentRef.current = true;
+            // Send a welcome prompt to get dynamic response from DeepSeek
+            setTimeout(() => {
+                sendMessage({ text: 'Bonjour' });
+            }, 0);
+        }
+    }, [messages.length, sendMessage]);
 
     // Analyze messages to detect good practices and generate report
     useEffect(() => {
         if (!messages.length || report) return; // Don't regenerate if report already exists
 
+        // Category max points mapping based on scoring rules
+        const categoryMaxPoints: Record<string, number> = {
+            'Contenu': 20,
+            'Infrastructure': 25,
+            'Performance': 15,
+            'Développement': 15,
+            'Sobriété': 25,
+        };
+
         const lastMessage = messages[messages.length - 1];
-        const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop();
+        const lastUserMessage = messages.filter((m) => m.role === 'user').pop();
         
         // Check if user is asking for a report
-        const userContent = lastUserMessage?.content?.toLowerCase() || '';
-        const assistantContent = lastMessage?.content?.toLowerCase() || '';
+        const userContent = getMessageContent(lastUserMessage || {}).toLowerCase();
+        const assistantContent = getMessageContent(lastMessage || {}).toLowerCase();
         
         const isRequestingReport = 
             userContent.includes('rapport') || 
@@ -47,19 +68,17 @@ export const useChat = () => {
 
         if (isRequestingReport && messages.length > 2) {
             // Analyze conversation to detect good practices
-            const breakdownMap = new Map<string, any>();
-            const allMessages = messages.map((m: any) => {
-                const content = typeof m.content === 'string' ? m.content : 
-                    (m.parts?.find((p: any) => p.text)?.text || '');
-                return { role: m.role, content: content.toLowerCase() };
+            const breakdownMap = new Map<string, { category: string; points: number; maxPoints: number; feedback: string }>();
+            const allMessages = messages.map((m) => {
+                const content = getMessageContent(m).toLowerCase();
+                return { role: m.role, content };
             });
 
             // Detect good practices from user responses
-            allMessages.forEach((msg, idx) => {
+            allMessages.forEach((msg) => {
                 if (msg.role !== 'user') return;
                 
                 const content = msg.content;
-                const nextMsg = allMessages[idx + 1];
                 
                 // Check for positive responses
                 const isPositive = ['oui', 'yes', 'déjà', 'fait', 'absolument', 'bien sûr', 'ok', 'd\'accord', 'parfait'].some(
@@ -124,7 +143,7 @@ export const useChat = () => {
             });
 
             const breakdown = Array.from(breakdownMap.values());
-            const totalPoints = breakdown.reduce((sum: number, item: any) => sum + item.points, 0);
+            const totalPoints = breakdown.reduce((sum: number, item) => sum + item.points, 0);
 
             // Generate personalized recommendations for missing categories
             const recommendations: string[] = [];
@@ -152,23 +171,25 @@ export const useChat = () => {
                 recommendations.push("✨ Vous êtes sur la bonne voie ! Poursuivez avec l'optimisation du cache et du code pour atteindre un excellent score.");
             }
 
-            setReport({
-                score: Math.min(100, totalPoints),
-                recommendations,
-                breakdown
-            });
+            // Use setTimeout to avoid setState in effect warning
+            setTimeout(() => {
+                setReport({
+                    score: Math.min(100, totalPoints),
+                    recommendations,
+                    breakdown
+                });
+            }, 0);
         }
     }, [messages, report]);
 
     const resetChat = () => {
-        setMessages([
-            {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: "Bonjour ! 🌱 Je suis votre **Coach Eco-Numérique**.\n\nMon objectif est de vous aider à comprendre et réduire l'empreinte carbone de votre projet numérique à travers un dialogue interactif.\n\nJe vais vous poser des questions sur vos choix techniques (images, hébergement, cache, code...) et vous expliquer l'impact environnemental de chaque décision.\n\n**Par quoi souhaitez-vous commencer ?**\n- Optimisation des images\n- Choix du serveur/hébergement\n- Configuration du cache\n- Optimisation du code\n- Autre question ?",
-            }
-        ]);
+        setMessages([]);
         setReport(null);
+        welcomeSentRef.current = false;
+        // Send welcome message to get fresh response from DeepSeek
+        setTimeout(() => {
+            sendMessage({ text: 'Bonjour' });
+        }, 100);
     };
 
     return {
