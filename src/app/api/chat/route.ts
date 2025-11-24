@@ -8,10 +8,6 @@ export const maxDuration = 30;
 const openrouter = createOpenAI({
     apiKey: process.env.OPENROUTER_API_KEY || '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',
     baseURL: 'https://openrouter.ai/api/v1',
-    defaultHeaders: {
-        'HTTP-Referer': process.env.SITE_URL || 'http://localhost:3000', // Optional. Site URL for rankings on openrouter.ai
-        'X-Title': process.env.SITE_NAME || 'Eco-Assistant IA', // Optional. Site title for rankings on openrouter.ai
-    },
 });
 
 export async function POST(req: Request) {
@@ -52,7 +48,7 @@ Tu n'es PAS un simple bot de support technique. Tu es un **enseignant** qui sens
    - "Le cache est-il activé sur votre projet ?"
    - "Connaissez-vous le PUE (Power Usage Effectiveness) de votre hébergeur ?"
 
-3. **ANALYSE LES RÉPONSES** : 
+3. **ANALYSE LES RÉPONSES** :
    - Si l'utilisateur répond positivement (oui, déjà fait, bien sûr, etc.) → Utilise le tool 'updateEcoScore' pour le récompenser
    - Si l'utilisateur pose une question → Donne une explication pédagogique avec l'impact environnemental
    - Si l'utilisateur semble hésitant → Propose des alternatives et explique les bénéfices
@@ -94,6 +90,10 @@ Commence toujours par accueillir l'utilisateur chaleureusement et lui demander p
             messages: modelMessages, // Use converted ModelMessage[] instead of UIMessage[]
             // Tools removed - this model doesn't support function calling
             // Scoring logic will be handled in the frontend by analyzing AI responses
+            headers: {
+                'HTTP-Referer': process.env.SITE_URL || 'http://localhost:3000', // Optional. Site URL for rankings on openrouter.ai
+                'X-Title': process.env.SITE_NAME || 'Eco-Assistant IA', // Optional. Site title for rankings on openrouter.ai
+            },
         });
 
         // Return the response stream for useChat hook
