@@ -118,4 +118,3 @@ Commence toujours par accueillir l'utilisateur chaleureusement et lui demander p
         );
     }
 }
-// Force rebuild
