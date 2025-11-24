@@ -118,14 +118,32 @@ bun dev
 
 ### Vercel (recommandé)
 
-1. Poussez votre code sur GitHub
-2. Importez le projet sur [Vercel](https://vercel.com)
-3. Ajoutez la variable d'environnement `OPENROUTER_API_KEY` dans les paramètres du projet
-4. Déployez !
+1. **Poussez votre code sur GitHub** (déjà fait : https://github.com/Moustapha22013/eco-coach-ia)
+
+2. **Importez le projet sur Vercel** :
+   - Allez sur [Vercel](https://vercel.com)
+   - Cliquez sur "Add New Project"
+   - Importez le repository `eco-coach-ia`
+   - Vercel détectera automatiquement Next.js
+
+3. **Configurez les variables d'environnement** :
+   - `OPENROUTER_API_KEY` : Votre clé API OpenRouter (requis)
+   - `SITE_URL` : URL de votre site déployé (optionnel, ex: https://votre-app.vercel.app)
+   - `SITE_NAME` : Nom de votre application (optionnel, ex: Eco-Assistant IA)
+
+4. **Déployez !** Vercel déploiera automatiquement votre application.
+
+### Variables d'environnement requises
+
+| Variable | Description | Requis |
+|----------|-------------|--------|
+| `OPENROUTER_API_KEY` | Clé API OpenRouter pour accéder à DeepSeek R1T2 Chimera | ✅ Oui |
+| `SITE_URL` | URL du site pour les statistiques OpenRouter | ❌ Non |
+| `SITE_NAME` | Nom du site pour les statistiques OpenRouter | ❌ Non |
 
 ### Autres plateformes
 
-Assurez-vous de définir la variable d'environnement `OPENROUTER_API_KEY` dans votre configuration de déploiement.
+Assurez-vous de définir les variables d'environnement dans votre configuration de déploiement. Le fichier `vercel.json` est configuré pour un timeout de 30 secondes pour les routes API.
 
 ## 📚 Ressources
 
