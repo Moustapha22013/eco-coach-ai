@@ -5,9 +5,11 @@ import { streamText, convertToModelMessages } from 'ai';
 export const maxDuration = 30;
 
 // Initialize OpenRouter client for DeepSeek R1T2 Chimera
+// Note: defaultHeaders is NOT supported by createOpenAI, headers are passed in streamText instead
 const openrouter = createOpenAI({
     apiKey: process.env.OPENROUTER_API_KEY || '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',
     baseURL: 'https://openrouter.ai/api/v1',
+    // DO NOT add defaultHeaders here - it's not supported by OpenAIProviderSettings
 });
 
 export async function POST(req: Request) {
