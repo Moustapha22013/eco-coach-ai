@@ -52,14 +52,14 @@ export const useChat = () => {
 
         const lastMessage = messages[messages.length - 1];
         const lastUserMessage = messages.filter((m) => m.role === 'user').pop();
-        
+
         // Check if user is asking for a report
         const userContent = getMessageContent(lastUserMessage || {}).toLowerCase();
         const assistantContent = getMessageContent(lastMessage || {}).toLowerCase();
-        
-        const isRequestingReport = 
-            userContent.includes('rapport') || 
-            userContent.includes('score') || 
+
+        const isRequestingReport =
+            userContent.includes('rapport') ||
+            userContent.includes('score') ||
             userContent.includes('résumé') ||
             userContent.includes('au revoir') ||
             userContent.includes('merci') ||
@@ -77,9 +77,9 @@ export const useChat = () => {
             // Detect good practices from user responses
             allMessages.forEach((msg) => {
                 if (msg.role !== 'user') return;
-                
+
                 const content = msg.content;
-                
+
                 // Check for positive responses
                 const isPositive = ['oui', 'yes', 'déjà', 'fait', 'absolument', 'bien sûr', 'ok', 'd\'accord', 'parfait'].some(
                     word => content.includes(word)
@@ -96,7 +96,7 @@ export const useChat = () => {
                         });
                     }
                 }
-                
+
                 if (content.includes('serveur') || content.includes('héberg') || content.includes('cloud') || content.includes('pue') || content.includes('vert')) {
                     if (isPositive || content.includes('utilis') || content.includes('choisi')) {
                         breakdownMap.set('Infrastructure', {
@@ -107,7 +107,7 @@ export const useChat = () => {
                         });
                     }
                 }
-                
+
                 if (content.includes('cache') || content.includes('cdn') || content.includes('redis') || content.includes('varnish')) {
                     if (isPositive || content.includes('activ') || content.includes('configur')) {
                         breakdownMap.set('Performance', {
@@ -118,7 +118,7 @@ export const useChat = () => {
                         });
                     }
                 }
-                
+
                 if (content.includes('code') || content.includes('minif') || content.includes('bundle') || content.includes('tree shaking')) {
                     if (isPositive || content.includes('optimis') || content.includes('utilis')) {
                         breakdownMap.set('Développement', {
@@ -129,7 +129,7 @@ export const useChat = () => {
                         });
                     }
                 }
-                
+
                 if (content.includes('sobriété') || content.includes('simple') || content.includes('minimal') || content.includes('essentiel')) {
                     if (isPositive) {
                         breakdownMap.set('Sobriété', {
@@ -147,7 +147,7 @@ export const useChat = () => {
 
             // Generate personalized recommendations for missing categories
             const recommendations: string[] = [];
-            
+
             if (!breakdownMap.has('Contenu')) {
                 recommendations.push("📸 Optimisez vos images et vidéos : utilisez des formats modernes (WebP/AVIF), compressez-les, et évitez l'autoplay vidéo. Impact : réduction de 30-50% de la bande passante.");
             }
